@@ -29,7 +29,7 @@
   "devDependencies": {
     "purescript-console": "^3.0.0",
     "purescript-quickcheck": "^4.0.0",
-    "purescript-quickcheck-laws": "git://github.com/soupi/purescript-quickcheck-laws.git#38327d5"
+    "purescript-quickcheck-laws": "^v3.0.0"
   },
-  "version": "2.0.0"
+  "version": "1.0.0"
 }
