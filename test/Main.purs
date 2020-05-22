@@ -2,10 +2,8 @@ module Test.Main where
 
 import Prelude
 
-import Control.Monad.Eff                        (Eff())
-import Control.Monad.Eff.Console                (CONSOLE(), log)
-import Control.Monad.Eff.Random                 (RANDOM())
-import Control.Monad.Eff.Exception              (EXCEPTION())
+import Effect                                   (Effect)
+import Effect.Console                           (log)
 import Data.Foldable                            ( class Foldable
                                                 , foldl
                                                 , foldMap
@@ -42,10 +40,10 @@ import Control.Comonad (class Comonad, extract)
 import Data.Unfoldable (class Unfoldable)
 
 
-main :: Eff (console :: CONSOLE, random :: RANDOM, exception :: EXCEPTION) Unit
+main :: Effect Unit
 main = do
     log "Checking that `show` is total"
-    quickCheck $ const Success $ show :: ArbitraryZipper Number -> String
+    quickCheck $ const Success (show :: ArbitraryZipper Number -> String)
 
     checkEq      prxZipper
     -- checkOrd     prxZipper
@@ -71,11 +69,11 @@ main = do
                $ pure <<< (toUnfoldable :: ArbitraryZipper Number -> Array Number)
                         <=< fromFoldable
     log "Checking that `up` and `down` are inverses where their composition is defined"
-    quickCheck $ notUnequal Just $ (up <=< down) :: ArbitraryZipper Number -> Maybe (ArbitraryZipper Number)
-    quickCheck $ notUnequal Just $ (down <=< up) :: ArbitraryZipper Number -> Maybe (ArbitraryZipper Number)
+    quickCheck $ notUnequal Just ((up <=< down) :: ArbitraryZipper Number -> Maybe (ArbitraryZipper Number))
+    quickCheck $ notUnequal Just ((down <=< up) :: ArbitraryZipper Number -> Maybe (ArbitraryZipper Number))
     log "Checking that `beginning` and `end` are idempotent"
-    quickCheck $ idempotent $ beginning :: ArbitraryZipper Number -> ArbitraryZipper Number
-    quickCheck $ idempotent $ end       :: ArbitraryZipper Number -> ArbitraryZipper Number
+    quickCheck $ idempotent (beginning :: ArbitraryZipper Number -> ArbitraryZipper Number)
+    quickCheck $ idempotent (end       :: ArbitraryZipper Number -> ArbitraryZipper Number)
 
 
 prxZipper2 :: Proxy2 ArbitraryZipper
@@ -94,7 +92,7 @@ prxC :: Proxy Int
 prxC = Proxy
 
 notUnequal :: forall a. Eq a => Show a => (a -> Maybe a) -> (a -> Maybe a) -> a -> Result
-notUnequal f g x = maybe Success id $ (===) <$> f x <*> g x
+notUnequal f g x = maybe Success identity $ (===) <$> f x <*> g x
 
 idempotent :: forall a. Eq a => (a -> a) -> a -> Boolean
 idempotent f = eq <$> f <<< f <*> f

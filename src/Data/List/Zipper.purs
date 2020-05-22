@@ -127,7 +127,7 @@ instance traversableZipper :: Traversable Zipper where
                                          <*> f c
                                          <*> traverse f rs
     -- sequence :: forall a m. (Applicative m) => (Zipper (m a)) -> m (Zipper a)
-    sequence = traverse id
+    sequence = traverse identity
 
 -------------------------------------------------------------------------------
 -- Helper Functions -----------------------------------------------------------
